@@ -1,5 +1,7 @@
 package genius
 
+//Response is an actual response object from Genius API
+//Consist links to possible retrievavable objects: Artist, Song, etc
 type Response struct {
 	Meta struct {
 		Status  int    `json:"status"`
@@ -16,11 +18,16 @@ type Response struct {
 		WebPage    *WebPage    `json:"web_page"`
 	} `json:"response"`
 }
+
+//WithBody is a struct to take care of different formats of field "body"
+//If "textFormat" was either "html" or "plain" Process method will put result string in Body field
+//In case of "dom" use RawBody
 type WithBody struct {
 	Body    string                 `json:"-"`
 	RawBody map[string]interface{} `json:"body"`
 }
 
+//Process will check the textFormat and put result string in Body field if textFormat was "html" or "plain"
 func (b *WithBody) Process(textFormat string) {
 	if textFormat != "dom" {
 		for _, v := range d.RawBody {
@@ -29,6 +36,7 @@ func (b *WithBody) Process(textFormat string) {
 	}
 }
 
+//Annotation is annotation on Genius API
 type Annotation struct {
 	WithBody
 	ApiPath             string        `json:"api_path"`
@@ -133,6 +141,7 @@ type Primary struct {
 	Applicable bool `json:"applicable"`
 }
 
+//User is user on Genius API
 type User struct {
 	ApiPath                     string        `json:"api_path"`
 	Avatar                      *Avatar       `json:"avatar"`
@@ -192,6 +201,7 @@ type Album struct {
 	Artist      *Artist `json:"artist"`
 }
 
+//Song is song on Genius API
 type Song struct {
 	WithDescription
 	AnnotationCount          int                    `json:"annotation_count"`
@@ -241,6 +251,7 @@ type SongRelationship struct {
 	Songs []*Song `json:"songs"`
 }
 
+//WebPage is web_page on Genius API
 type WebPage struct {
 	ApiPath         string `json:"api_path"`
 	Domain          string `json:"domain"`
@@ -261,11 +272,15 @@ type Media struct {
 	URL        string `json:"url"`
 }
 
+//WithDescription is a struct to take care of different formats of field "description"
+//If "textFormat" was either "html" or "plain" Process method will put result string in Description field
+//In case of "dom" use RawDescription
 type WithDescription struct {
 	Description    string                 `json:"-"`
 	RawDescription map[string]interface{} `json:"description"`
 }
 
+//Process will check the textFormat and put result string in Description field if textFormat was "html" or "plain"
 func (d *WithDescription) Process(textFormat string) {
 	if textFormat != "dom" {
 		for _, v := range d.RawDescription {
@@ -274,6 +289,7 @@ func (d *WithDescription) Process(textFormat string) {
 	}
 }
 
+//Artist is artist on Genius API
 type Artist struct {
 	WithDescription
 	AlternateNames        []string               `json:"alternate_names"`
@@ -295,6 +311,9 @@ type Artist struct {
 	User                  *User                  `json:"user"`
 }
 
+//Hit is a hit on Genius API
+//Used in /search handler
+//Includes song results only
 type Hit struct {
 	Highlights []string `json:"highlights"`
 	Index      string   `json:"index"`
