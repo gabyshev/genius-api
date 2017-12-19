@@ -1,6 +1,8 @@
 # genius-api
 Golang bindings for Genius API
 
+[![GoDoc](https://godoc.org/github.com/gabyshev/genius-api/genius?status.svg)](https://godoc.org/github.com/gabyshev/genius-api/genius)
+
 
 ## Usage
 
