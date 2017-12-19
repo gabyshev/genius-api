@@ -1,5 +1,9 @@
 package genius
 
+import (
+	"time"
+)
+
 //Response is an actual response object from Genius API
 //Consist links to possible retrievavable objects: Artist, Song, etc
 type Response struct {
@@ -30,7 +34,7 @@ type WithBody struct {
 //Process will check the textFormat and put result string in Body field if textFormat was "html" or "plain"
 func (b *WithBody) Process(textFormat string) {
 	if textFormat != "dom" {
-		for _, v := range d.RawBody {
+		for _, v := range b.RawBody {
 			b.Body = v.(string)
 		}
 	}
@@ -106,7 +110,6 @@ type UserMetadata struct {
 	ExcludedPersmissions []string    `json:"excluded_permissions"`
 	Features             []string    `json:"features"`
 	IQByAction           *IQByAction `json:"iq_by_action"`
-	Features             []string    `json:"features"`
 
 	Interactions struct {
 		Following bool `json:"following"`
@@ -136,9 +139,9 @@ type IQByAction struct {
 }
 
 type Primary struct {
-	Multiplier int  `json:"multiplier"`
-	Base       int  `json:"base"`
-	Applicable bool `json:"applicable"`
+	Multiplier int     `json:"multiplier"`
+	Base       float64 `json:"base"`
+	Applicable bool    `json:"applicable"`
 }
 
 //User is user on Genius API

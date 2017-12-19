@@ -104,7 +104,7 @@ func (c *Client) GetArtistHTML(id int) (*Response, error) {
 }
 
 //GetArtistSongs returns array of songs objects in response
-func (c *Client) GetArtistSongs(id int, sort string, per_page int, page int) {
+func (c *Client) GetArtistSongs(id int, sort string, per_page int, page int) (*Response, error) {
 	url := fmt.Sprintf(baseURL+"/artists/%d/songs", id)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -113,8 +113,8 @@ func (c *Client) GetArtistSongs(id int, sort string, per_page int, page int) {
 
 	q := req.URL.Query()
 	q.Add("sort", sort)
-	q.Add("per_page", per_page)
-	q.Add("page", page)
+	q.Add("per_page", string(per_page))
+	q.Add("page", string(page))
 	req.URL.RawQuery = q.Encode()
 
 	bytes, err := c.doRequest(req)
@@ -193,13 +193,14 @@ func (c *Client) getArtist(id int, textFormat string) (*Response, error) {
 func (c *Client) Search(q string) (*Response, error) {
 	url := fmt.Sprintf(baseURL + "/search")
 	req, err := http.NewRequest("GET", url, nil)
+
 	if err != nil {
 		return nil, err
 	}
 
-	q := req.URL.Query()
-	q.Add("q", q)
-	req.URL.RawQuery = q.Encode()
+	getParams := req.URL.Query()
+	getParams.Add("q", q)
+	req.URL.RawQuery = getParams.Encode()
 
 	bytes, err := c.doRequest(req)
 	if err != nil {
