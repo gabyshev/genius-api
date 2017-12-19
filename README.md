@@ -1,8 +1,11 @@
 # genius-api
-Golang bindings for Genius API
 
 [![GoDoc](https://godoc.org/github.com/gabyshev/genius-api/genius?status.svg)](https://godoc.org/github.com/gabyshev/genius-api/genius)
 
+Golang bindings for Genius API.
+Package is not ready to use yet and may change drastically in the future.
+
+To get token visit https://genius.com/developers
 
 ## Usage
 
