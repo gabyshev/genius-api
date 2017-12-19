@@ -1,9 +1,5 @@
 package genius_test
 
-import (
-	"github.com/gabyshev/genius-api"
-)
-
 func ExampleNewClient() {
 	accessToken := "token"
 	client := genius.NewClient(nil, accessToken)
