@@ -2,6 +2,7 @@ package genius
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -57,7 +58,7 @@ func (c *Client) doRequest(req *http.Request) ([]byte, error) {
 }
 
 //GetAccount returns current user account data
-func (c *Client) GetAccount() (*Response, error) {
+func (c *Client) GetAccount() (*User, error) {
 	url := fmt.Sprintf(baseURL + "/account/")
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -75,36 +76,40 @@ func (c *Client) GetAccount() (*Response, error) {
 		return nil, err
 	}
 
-	return &response, nil
+	if response.Meta.Status != 200 {
+		return nil, errors.New(response.Meta.Message)
+	}
+
+	return response.Response.User, nil
 }
 
 //GetArtist returns Artist object in response
 //
 //Uses "dom" as textFormat by default
-func (c *Client) GetArtist(id int) (*Response, error) {
+func (c *Client) GetArtist(id int) (*Artist, error) {
 	return c.GetArtistDom(id)
 }
 
 //GetArtistDom returns Artist object in response
 //With "dom" as textFormat
-func (c *Client) GetArtistDom(id int) (*Response, error) {
+func (c *Client) GetArtistDom(id int) (*Artist, error) {
 	return c.getArtist(id, "dom")
 }
 
 //GetArtistPlain returns Artist object in response
 //With "plain" as textFormat
-func (c *Client) GetArtistPlain(id int) (*Response, error) {
+func (c *Client) GetArtistPlain(id int) (*Artist, error) {
 	return c.getArtist(id, "plain")
 }
 
 //GetArtistHTML returns Artist object in response
 //With "html" as textFormat
-func (c *Client) GetArtistHTML(id int) (*Response, error) {
+func (c *Client) GetArtistHTML(id int) (*Artist, error) {
 	return c.getArtist(id, "html")
 }
 
 //GetArtistSongs returns array of songs objects in response
-func (c *Client) GetArtistSongs(id int, sort string, per_page int, page int) (*Response, error) {
+func (c *Client) GetArtistSongs(id int, sort string, per_page int, page int) ([]*Song, error) {
 	url := fmt.Sprintf(baseURL+"/artists/%d/songs", id)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -128,7 +133,11 @@ func (c *Client) GetArtistSongs(id int, sort string, per_page int, page int) (*R
 		return nil, err
 	}
 
-	return &response, nil
+	if response.Meta.Status != 200 {
+		return nil, errors.New(response.Meta.Message)
+	}
+
+	return response.Response.Songs, nil
 }
 
 //GetSong returns Song object in response
@@ -160,7 +169,7 @@ func (c *Client) GetSong(id int, textFormat string) (*Response, error) {
 }
 
 //getArtist is a method taking id and textFormat as arguments to make request and return Artist object in response
-func (c *Client) getArtist(id int, textFormat string) (*Response, error) {
+func (c *Client) getArtist(id int, textFormat string) (*Artist, error) {
 	url := fmt.Sprintf(baseURL+"/artists/%d", id)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -184,13 +193,17 @@ func (c *Client) getArtist(id int, textFormat string) (*Response, error) {
 
 	response.Response.Artist.Process(textFormat)
 
-	return &response, nil
+	if response.Meta.Status != 200 {
+		return nil, errors.New(response.Meta.Message)
+	}
+
+	return response.Response.Artist, nil
 }
 
 //Search returns array of Hit objects in response
 //
 //Currently only songs are searchable by this handler
-func (c *Client) Search(q string) (*Response, error) {
+func (c *Client) Search(q string) ([]*Hit, error) {
 	url := fmt.Sprintf(baseURL + "/search")
 	req, err := http.NewRequest("GET", url, nil)
 
@@ -213,11 +226,15 @@ func (c *Client) Search(q string) (*Response, error) {
 		return nil, err
 	}
 
-	return &response, nil
+	if response.Meta.Status != 200 {
+		return nil, errors.New(response.Meta.Message)
+	}
+
+	return response.Response.Hits, nil
 }
 
 //GetAnnotation gets annotation object in response
-func (c *Client) GetAnnotation(id string, textFormat string) (*Response, error) {
+func (c *Client) GetAnnotation(id int, textFormat string) (*Annotation, error) {
 	url := fmt.Sprintf(baseURL+"/annotations/%d", id)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -241,5 +258,9 @@ func (c *Client) GetAnnotation(id string, textFormat string) (*Response, error) 
 
 	response.Response.Annotation.Process(textFormat)
 
-	return &response, nil
+	if response.Meta.Status != 200 {
+		return nil, errors.New(response.Meta.Message)
+	}
+
+	return response.Response.Annotation, nil
 }

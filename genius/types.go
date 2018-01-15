@@ -146,17 +146,50 @@ type Primary struct {
 
 //User is user on Genius API
 type User struct {
-	ApiPath                     string        `json:"api_path"`
-	Avatar                      *Avatar       `json:"avatar"`
-	HeaderImageURL              string        `json:"header_image_url"`
-	HumanReadableRoleForDisplay string        `json:"human_readable_role_for_display"`
-	ID                          int           `json:"id"`
-	IQ                          int           `json:"iq"`
-	Login                       string        `json:"login"`
-	Name                        string        `json:"name"`
-	RoleForDisplay              string        `json:"role_for_display"`
-	URL                         string        `json:"url"`
-	CurrentUserMetadata         *UserMetadata `json:"current_user_metadata"`
+	//Aboutme
+	AvailableIdentityProviders   []string      `json:"available_identity_providers"`
+	CustomHeaderImageURL         string        `json:"custom_header_image_url"`
+	Email                        string        `json:"email"`
+	FollowedUsersCount           int           `json:"followed_users_count"`
+	FollowersCount               int           `json:"followers_count"`
+	Identities                   []*Identity   `json:"identities"`
+	IQForDisplay                 string        `json:"iq_for_display"`
+	PhotoURL                     string        `json:"photo_url"`
+	Preferences                  *Preferences  `json:"preferences"`
+	RolesForDisplay              []string      `json:"roles_for_display"`
+	UnreadGroupsInboxCount       int           `json:"unread_groups_inbox_count"`
+	UnreadMainActivityInboxCount int           `json:"unread_main_activity_inbox_count"`
+	UnreadMessagesCount          int           `json:"unread_messages_count"`
+	UnreadNewsfeedInboxCount     int           `json:"unread_newsfeed_inbox_count"`
+	Artist                       bool          `json:"artist"`
+	ApiPath                      string        `json:"api_path"`
+	Avatar                       *Avatar       `json:"avatar"`
+	HeaderImageURL               string        `json:"header_image_url"`
+	HumanReadableRoleForDisplay  string        `json:"human_readable_role_for_display"`
+	ID                           int           `json:"id"`
+	IQ                           int           `json:"iq"`
+	Login                        string        `json:"login"`
+	Name                         string        `json:"name"`
+	RoleForDisplay               string        `json:"role_for_display"`
+	URL                          string        `json:"url"`
+	CurrentUserMetadata          *UserMetadata `json:"current_user_metadata"`
+}
+
+type Identity struct {
+	ID               int    `json:"id"`
+	Name             string `json:"name"`
+	Provider         string `json:"provider"`
+	CustomProperties string `json:"custom_properties"`
+}
+
+type Preferences struct {
+	MentionNotifications             bool `json:"mention_notifications"`
+	CreationCommentNotifications     bool `json:"creation_comment_notifications"`
+	MentionedForumNotifications      bool `json:"mentioned_forum_notifications"`
+	ForumPostCreationNotifications   bool `json:"forum_post_creation_notifications"`
+	MessageNotifications             bool `json:"message_notifications"`
+	FollowedThreadNotifications      bool `json:"followed_thread_notifications"`
+	EditorialSuggestionNotifications bool `json:"editorial_suggestion_notifications"`
 }
 
 type Avatar struct {
